@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: coursier/cache-action@v8
+      - run: ./mill -i __.test
+
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: coursier/cache-action@v8
+      - run: ./mill -i mill.scalalib.SonatypeCentralPublishModule/
+        env:
+          MILL_SONATYPE_USERNAME: ${{ secrets.MILL_SONATYPE_USERNAME }}
+          MILL_SONATYPE_PASSWORD: ${{ secrets.MILL_SONATYPE_PASSWORD }}
+          MILL_PGP_SECRET_BASE64: ${{ secrets.MILL_PGP_SECRET_BASE64 }}
+          MILL_PGP_PASSPHRASE: ${{ secrets.MILL_PGP_PASSPHRASE }}

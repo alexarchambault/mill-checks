@@ -1,5 +1,8 @@
 # mill-checks
 
+[![CI](https://github.com/alexarchambault/mill-checks/actions/workflows/ci.yml/badge.svg)](https://github.com/alexarchambault/mill-checks/actions/workflows/ci.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.alexarchambault.mill/mill-checks_3.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.alexarchambault.mill/mill-checks_3)
+
 Check that your Mill build is well configured by ensuring
 - all modules have at least one source file
 - there are no "orphan" sources in your workspace (sources that are not inputs of a module)

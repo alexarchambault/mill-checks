@@ -3,8 +3,8 @@ package io.github.alexarchambault.millchecks
 import mill.*
 import mill.api.*
 import mill.constants.OutFiles
-import mill.util.Tasks
-import mill.api.PathRef
+import mill.millchecks.EvaluatorHelper
+import mill.util.{MainModule, Tasks}
 
 object MillChecks extends ExternalModule {
 
@@ -140,6 +140,28 @@ object MillChecks extends ExternalModule {
         Task.fail("Found test modules with no test classes")
     }
 
+  private def defaultTasksThatShouldntTriggerCompilation = Seq("__.allSources", "__.allSourceFiles")
+  def sourcesDontTriggerCompilation(evaluator: Evaluator, toCheck: String*): Task.Command[Unit] = {
+    val mainModule = EvaluatorHelper(evaluator).rootModule match {
+      case m: MainModule => m
+      case other => sys.error(s"Unexpected root module type: $other")
+    }
+    val toCheck0 =
+      if (toCheck.isEmpty) defaultTasksThatShouldntTriggerCompilation
+      else toCheck
+    val plansCommand = Task.traverse(toCheck0)(cmd => mainModule.plan(evaluator, cmd))
+    Task.Command(exclusive = true) {
+      val plans = plansCommand()
+
+      val compileTasksInPlans = plans.map(_.filter(t => t.endsWith(".compile") || t.contains(".super.compile.")))
+
+      if (compileTasksInPlans.exists(_.nonEmpty))
+        Task.fail(s"${toCheck0.mkString(" or ")} depend on compile tasks: ${compileTasksInPlans.flatten.mkString(", ")}")
+
+      ()
+    }
+  }
+
   def allChecks(
     evaluator: Evaluator,
     emptySourcesTasks: Tasks[Seq[PathRef]] = Tasks(Nil),
@@ -150,6 +172,14 @@ object MillChecks extends ExternalModule {
       noEmptySources(evaluator, emptySourcesTasks)()
       noOrphanSources(evaluator, orphanSourcesTasks)()
       noEmptyDiscoveredTestClasses(evaluator, discovedTestClassesTasks)()
+    }
+
+  def bspChecks(
+    evaluator: Evaluator,
+    shouldntTriggerCompilation: Seq[String] = Nil
+  ): Task.Command[Unit] =
+    Task.Command(exclusive = true) {
+      sourcesDontTriggerCompilation(evaluator, shouldntTriggerCompilation*)()
     }
 
   lazy val millDiscover = Discover[this.type]

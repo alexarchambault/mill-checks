@@ -115,6 +115,29 @@ object Tests extends TestSuite {
         assert(output.contains("  bar/Thing.scala"))
       }
     }
+
+    test("validBsp") {
+      withTestWorkspace("valid") { ws =>
+        os.proc(ws / "mill", "--import", s"io.github.alexarchambault.mill::mill-checks:$version", "io.github.alexarchambault.millchecks.MillChecks/bspChecks")
+          .call(cwd = ws, env = extraEnv)
+
+        ()
+      }
+    }
+
+    test("bsp-source-triggers-compile") {
+      withTestWorkspace("bsp-source-triggers-compile") { ws =>
+        val res = os.proc(ws / "mill", "--import", s"io.github.alexarchambault.mill::mill-checks:$version", "io.github.alexarchambault.millchecks.MillChecks/bspChecks")
+          .call(cwd = ws, env = extraEnv, stdout = os.Pipe, mergeErrIntoOut = true, check = false)
+
+        assert(res.exitCode != 0)
+
+        val output = res.out.text()
+        assert(output.contains("__.allSources or __.allSourceFiles depend on compile tasks: "))
+        assert(output.contains("foo.compile"))
+      }
+    }
+
   }
 
 }

@@ -15,7 +15,7 @@ object Versions {
 
 object `mill-checks` extends ScalaModule, PublishModule:
   def scalaVersion = Versions.scala
-  def mvnDeps = Seq(
+  def compileMvnDeps = Seq(
     mvn"com.lihaoyi::mill-libs-util:${Versions.mill}"
   )
   def publishVersion = VcsVersion.vcsState().format(untaggedSuffix = "-SNAPSHOT")

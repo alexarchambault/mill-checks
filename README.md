@@ -17,8 +17,19 @@ for example.
 ### Simple use
 ```
 ./mill \
-  --import io.github.alexarchambault.mill::mill-checks:0.1.0 \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
   io.github.alexarchambault.millchecks.MillChecks/allChecks
+```
+
+### BSP
+
+Check that listing build sources doesn't trigger compilation (which can
+happen with generated sources for example, and slows down BSP features):
+
+```
+./mill \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
+  io.github.alexarchambault.millchecks.MillChecks/bspChecks
 ```
 
 ### Advanced use
@@ -27,19 +38,19 @@ for example.
 
 ```
 ./mill \
-  --import io.github.alexarchambault.mill::mill-checks:0.1.0 \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
   io.github.alexarchambault.millchecks.MillChecks/noEmptySources
 ```
 
 ```
 ./mill \
-  --import io.github.alexarchambault.mill::mill-checks:0.1.0 \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
   io.github.alexarchambault.millchecks.MillChecks/noOrphanSources
 ```
 
 ```
 ./mill \
-  --import io.github.alexarchambault.mill::mill-checks:0.1.0 \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
   io.github.alexarchambault.millchecks.MillChecks/noEmptyDiscoveredTestClasses
 ```
 
@@ -47,21 +58,21 @@ for example.
 
 ```
 ./mill \
-  --import io.github.alexarchambault.mill::mill-checks:0.1.0 \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
   io.github.alexarchambault.millchecks.MillChecks/noEmptySources \
   --tasks __.allSourceFiles
 ```
 
 ```
 ./mill \
-  --import io.github.alexarchambault.mill::mill-checks:0.1.0 \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
   io.github.alexarchambault.millchecks.MillChecks/noOrphanSources \
   --sourceTasks '__.{allSourceFiles,compileResources}'
 ```
 
 ```
 ./mill \
-  --import io.github.alexarchambault.mill::mill-checks:0.1.0 \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
   io.github.alexarchambault.millchecks.MillChecks/noEmptyDiscoveredTestClasses \
   --tasks __.discoveredTestClasses
 ```
@@ -70,7 +81,7 @@ for example.
 
 ```
 MILL_CHECKS_ALLOW_EMPTY_SOURCES="first,other,thing" ./mill \
-  --import io.github.alexarchambault.mill::mill-checks:0.1.0 \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
   io.github.alexarchambault.millchecks.MillChecks/allChecks
 ```
 
@@ -78,7 +89,7 @@ MILL_CHECKS_ALLOW_EMPTY_SOURCES="first,other,thing" ./mill \
 
 ```
 MILL_CHECKS_ORPHAN_SOURCES_IGNORE="some-dir/,a/Thing.scala" ./mill \
-  --import io.github.alexarchambault.mill::mill-checks:0.1.0 \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
   io.github.alexarchambault.millchecks.MillChecks/allChecks
 ```
 
@@ -86,6 +97,6 @@ MILL_CHECKS_ORPHAN_SOURCES_IGNORE="some-dir/,a/Thing.scala" ./mill \
 
 ```
 MILL_CHECKS_SOURCES_EXTENSIONS="java,scala,foo" ./mill \
-  --import io.github.alexarchambault.mill::mill-checks:0.1.0 \
+  --import io.github.alexarchambault.mill::mill-checks:0.1.2 \
   io.github.alexarchambault.millchecks.MillChecks/allChecks
 ```
